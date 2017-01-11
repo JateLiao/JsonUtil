@@ -136,7 +136,7 @@ public class CommonUtil {
         boolean existYinhao = false;
         for (int i = 0; i < json.length(); i++) {
             char c = json.charAt(i);
-            existYinhao = ('"' == c && '\\' != json.charAt(i - 1)) ? !existYinhao : existYinhao;
+            existYinhao = ('"' == c && '\\' != json.charAt(Math.max(i - 1, 0))) ? !existYinhao : existYinhao;
             if (i == json.length() - 1 || (',' == c && '}' == json.charAt(i - 1) && '{' == json.charAt(i + 1) && !existYinhao)) {
                 sb.append((i == json.length() - 1) ? c : ""); // 拼接最后一个字符
                 valList.add(sb.toString());
@@ -319,6 +319,66 @@ public class CommonUtil {
                 beginSign = null;
                 confirmColon = false;
                 singleDone = false;
+            }
+        }
+        
+        return list;
+    }
+    
+    /**
+     * TODO 获取List类型的json的每个元素的单独的json，并以List形式返回.
+     * 
+     * ["","",""] 
+     * [x,x,x] 
+     * [{},{},{}] 
+     * [[],[],[]]
+     */
+    public static List<String> getSingleJsonFromList(String json){
+        List<String> list = new ArrayList<>();
+        json = json.substring(1, json.length() - 1);
+        StringBuffer sb = new StringBuffer();
+        String beginSign = null;
+        boolean existsYinhao = false;
+        boolean singleDone = false; // 完成单个
+        beginSign = "\"{[".contains(String.valueOf(json.charAt(0))) ? String.valueOf(json.charAt(0)) : beginSign;
+        int signCount = 0;
+        
+        for (int i = 0; i < json.length(); i++) {
+            char c = json.charAt(i);
+            sb.append(c);
+            existsYinhao = ('"' == c && '\\' != json.charAt(Math.max(i - 1, 0))) ? !existsYinhao : existsYinhao;
+            
+            if (null == beginSign) {
+                if (',' == c || i == json.length() - 1) {
+                    singleDone = true;
+                }
+            } else if ("\"".equals(beginSign)) {
+                if (!existsYinhao && (',' == c || i == json.length() - 1)) {
+                    singleDone = true;
+                }
+            } else if ("{".equals(beginSign)) {
+                signCount += (!existsYinhao && '{' == c) ? 1 : 0;
+                signCount -= (!existsYinhao && '}' == c) ? 1 : 0;
+                if (!existsYinhao && signCount == 0 && (i == json.length() - 1 || c == ',')) {
+                    singleDone = true;
+                }
+                
+            } else if ("[".equals(beginSign)) {
+                signCount += (!existsYinhao && '[' == c) ? 1 : 0;
+                signCount -= (!existsYinhao && ']' == c) ? 1 : 0;
+                if (!existsYinhao && (signCount == 0 || i == json.length() - 1)) {
+                    singleDone = true;
+                }
+            }
+            
+            if (singleDone) {
+                if (',' == sb.toString().charAt(sb.length() - 1)) {
+                    sb.setLength(sb.length() - 1);
+                }
+                list.add(sb.toString());
+                sb.setLength(0);
+                singleDone = false;
+                signCount = 0;
             }
         }
         

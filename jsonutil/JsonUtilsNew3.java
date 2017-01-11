@@ -546,10 +546,9 @@ public class JsonUtilsNew3 {
      */
     private static Object instanceListObject(String json, Class clazz) {
         List<Object> list = new ArrayList<>();
-        List<SingleJSon> singles = CommonUtil.getSingleJsonValue(json);
-
-        for (SingleJSon single : singles) {
-            Object obj = toObject(single.getValue().substring(single.getColonIndex() + 1, single.getValue().length()), clazz);
+        List<String> singleJson = CommonUtil.getSingleJsonFromList(json);
+        for (String single : singleJson) {
+            Object obj = toObject(single, List.class, clazz);
             list.add(obj);
         }
         
