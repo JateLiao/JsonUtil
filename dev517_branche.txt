@@ -1,0 +1,4 @@
+Vim Mode Input:
+    This is a newly created txt file to text the git command:git clone and git branch -d dev517.
+
+The End!
