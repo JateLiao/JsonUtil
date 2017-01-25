@@ -200,7 +200,9 @@ public class JsonUtilsNew3 {
     }
     
     /**
-     * TODO 重载：针对List,Map,以及其他自定义泛型，支持混合的泛型类型，本质上这个方法也是为泛型类型做的.
+     * TODO 重载：针对List,Map,以及其他自定义泛型，支持混合的泛型类型，泛型嵌套，本质上这个方法也是为泛型类型做的.
+     * 
+     * 比如：ClassA<K, T, V> ==> ClassA<ClassB, List<ClassB>, Map<String, ClassB>>
      * 
      * @param json json.
      * @param clazz 外层类型.
