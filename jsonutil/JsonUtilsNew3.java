@@ -217,18 +217,15 @@ public class JsonUtilsNew3 {
         Object t = null;
         try {
             paramNullCheck(clazz, genericClazzs);
-            
-            if (genericClazzs[0] instanceof Class) {
-                
-            } else if (genericClazzs[0] instanceof ClassContainer) {
-                
-            }
+            t = instanceGenericObject(json, clazz, genericClazzs);
         } catch (Exception e) {
             t = null;
             e.printStackTrace();
         }
         return clazz.cast(t);
     }
+    
+    /***************************************************************************************************************************************************/
 
     /**
      * 基本字段类型值构造.
@@ -414,6 +411,100 @@ public class JsonUtilsNew3 {
         return obj;
     }
     
+
+    /**
+     * 重载楼上的方法，以支持泛型的嵌套等较为复杂的泛型类型.
+     * 
+     * 确定泛型的字段(包括顺序)->获取对应的泛型类型->转obj
+     */
+    private static Object instanceGenericObject(String json, Class clazz, Type[] genericClazzs) throws Exception {
+        Class clz = Class.forName(clazz.getName());
+        Object obj = clz.newInstance(); // 实例化目标对象
+        Map<String, Type> typeMap = new HashMap<>();
+        TypeVariable[] types = clazz.getTypeParameters();
+        
+        if (types.length != genericClazzs.length) {
+            throw new JsonUtilException("泛型参数个数与真实所需个数不一致!");
+        }
+        for (int i = 0; i < genericClazzs.length; i++) {
+            typeMap.put(types[i].getName(), genericClazzs[i]);
+        }
+        Map<Field, Type> fieldMap = new HashMap<>(); // 存下字段对应的类型
+        
+        List<SingleJSon> singles = CommonUtil.getSingleJsonValue(json);
+        Map<String, SingleJSon> sinMap = new HashMap<>();
+        for (SingleJSon sin : singles) {
+            sinMap.put(sin.getFieldName(), sin);
+        }
+        Field[] fds = clazz.getDeclaredFields();
+        for (Field fd : fds) {
+            fd.setAccessible(true);
+            
+            Object tmpObj = null;
+            if (ReflectUtil.isGenericTypeField(fd.getGenericType())) { // 是泛型字段
+                String tmp = fd.toGenericString();
+                fieldMap.put(fd, typeMap.get(tmp.substring(tmp.indexOf(" ") + 1, tmp.lastIndexOf(" "))));
+                continue;
+            }
+            
+            Class[] cls = null;
+            if (CommonUtil.isListType(fd.getType()) || CommonUtil.isMapType(fd.getType())) {
+                cls = ReflectUtil.getGeneriParamsFromField(fd);
+            }
+            tmpObj = instanceObject(sinMap.get(fd.getName()).getFieldValue(), fd, cls); // CommonUtil.getFieldStr4Others(json, fd.getName(), "[");
+            
+            fd.set(obj, tmpObj);
+            
+            fd.setAccessible(false);
+        }
+        
+        // 处理泛型字段
+        for (Entry<Field, Type> en : fieldMap.entrySet()) {
+            Object tmpObj = null;
+            String currentJson = sinMap.get(en.getKey()).getFieldValue(); // 当前json
+            Field fd = en.getKey();
+            fd.setAccessible(true);
+            if (en.getValue() instanceof Class) { // 简单泛型
+                Class[] cls = null;
+                if (CommonUtil.isListType(fd.getType()) || CommonUtil.isMapType(fd.getType())) {
+                    cls = ReflectUtil.getGeneriParamsFromField(fd);
+                }
+                tmpObj = instanceObject(currentJson, fd, cls);
+            } else if (en.getValue() instanceof ClassContainer) { // 复杂泛型
+                
+            }
+            fd.set(obj, tmpObj);
+            fd.setAccessible(false);
+        }
+        
+        return obj;
+    }
+    
+    /**
+     * 普通的obj构建.
+     */
+    private static Object instanceObject(String json, Field field, Class...cls) throws Exception {
+        Object obj = null; 
+        if (CommonUtil.isBasicType(field.getType())) {
+            json += "\"" + field.getName() + "\":";
+            if (field.getType() == String.class || field.getType() == Date.class || field.getType() == Character.class || field.getType() == char.class) {
+                json += "\"" + json + "\"";
+            } else {
+                json += CommonUtil.getFieldStr4Basic(json, field.getName(), false);
+            }
+            obj = instanceBasicObject(json, field.getName(), field.getType());
+        } else if (CommonUtil.isDefinedModel(field.getType())) {
+            obj = instanceModelObject(json, field.getType());
+        } else if (CommonUtil.isMapType(field.getType())) {
+            // Class[] cls = ReflectUtil.getGeneriParamsFromField(field);
+            obj = instanceMapObject(json, cls[0], cls[1]);
+        } else if (CommonUtil.isListType(field.getType())) {
+            // Class[] cls = ReflectUtil.getGeneriParamsFromField(field);
+            obj = instanceListObject(json, cls[0]);
+        }
+        return obj;
+    }
+    
     /**
      * Map类型值构造.
      */
@@ -474,6 +565,11 @@ public class JsonUtilsNew3 {
         Map<Field, Class> fieldMap = new HashMap<>(); // 存下字段对应的类型
         
         Field[] fds = rawClazz.getDeclaredFields();
+        List<SingleJSon> singles = CommonUtil.getSingleJsonValue(json);
+        Map<String, SingleJSon> sinMap = new HashMap<>();
+        for (SingleJSon sin : singles) {
+            sinMap.put(sin.getFieldName(), sin);
+        }
         for (Field fd : fds) {
             fd.setAccessible(true);
             Object tmpObj = null;
@@ -483,27 +579,11 @@ public class JsonUtilsNew3 {
                 continue;
             }
             
-            String currentJson = "";
-            if (CommonUtil.isBasicType(fd.getType())) {
-                currentJson += "\"" + fd.getName() + "\":";
-                if (fd.getType() == String.class || fd.getType() == Date.class || fd.getType() == Character.class || fd.getType() == char.class) {
-                    currentJson += "\"" + CommonUtil.getFieldStr4Basic(json, fd.getName(), true) + "\"";
-                } else {
-                    currentJson += CommonUtil.getFieldStr4Basic(json, fd.getName(), false);
-                }
-                tmpObj = instanceBasicObject(currentJson, fd.getName(), fd.getType());
-            } else if (CommonUtil.isDefinedModel(fd.getType())) {
-                currentJson = CommonUtil.getFieldStr4Others(json, fd.getName(), "{");
-                tmpObj = instanceModelObject(currentJson, fd.getType());
-            } else if (CommonUtil.isMapType(fd.getType())) {
-                currentJson = CommonUtil.getFieldStr4Others(json, fd.getName(), "{");
-                Class[] cls = ReflectUtil.getGeneriParamsFromField(fd);
-                tmpObj = instanceMapObject(currentJson, cls[0], cls[1]);
-            } else if (CommonUtil.isListType(fd.getType())) {
-                currentJson = CommonUtil.getFieldStr4Others(json, fd.getName(), "[");
-                Class[] cls = ReflectUtil.getGeneriParamsFromField(fd);
-                tmpObj = instanceListObject(currentJson, cls[0]);
+            Class[] cls = null;
+            if (CommonUtil.isListType(fd.getType()) || CommonUtil.isMapType(fd.getType())) {
+                cls = ReflectUtil.getGeneriParamsFromField(fd);
             }
+            tmpObj = instanceObject(sinMap.get(fd.getName()).getFieldValue(), fd, cls);
             
             fd.set(obj, tmpObj);
             // Method method = ReflectHelper.createSetterMethod(obj, fd.getName(), fdClazz);
