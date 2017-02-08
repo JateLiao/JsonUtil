@@ -19,7 +19,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
-import com.better517na.forStudy.advanced.reflect.jsonutil.model.ClassContainer;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeContainer;
 import com.better517na.forStudy.util.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -69,7 +69,7 @@ public class JsonTest3 {
     
     @Test
     public void tessst() throws Exception{
-        ClassContainer cn = new ClassContainer(Map.class, String.class, Integer.class);
+        TypeContainer cn = new TypeContainer(Map.class, String.class, Integer.class);
         if (cn instanceof ParameterizedType) {
             if (cn instanceof Type) {
                 System.err.println("777777777777777");
@@ -80,7 +80,7 @@ public class JsonTest3 {
             
             new Gson().fromJson("", null);
             JsonUtilsNew3.toObject("", String.class, null);
-            new ClassContainer(null, null);
+            new TypeContainer(null, null);
         }
     }
 
@@ -207,9 +207,10 @@ public class JsonTest3 {
         System.out.println(json);
         
         gen = JsonUtilsNew3.toObject(json, GenA.class, String.class, Define.class, Integer.class);
+        System.out.println();
         // gen = JsonUtils.toObject(json, new TypeToken<GenA<String, Define, Integer>>(){}.getType());
-        
-        System.out.println(gen.getName());
+        // System.out.println();
+        System.out.println(JsonUtils.toJson(gen));
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     

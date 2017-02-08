@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import com.better517na.forStudy.advanced.reflect.jsonutil.exception.JsonUtilException;
 import com.better517na.forStudy.advanced.reflect.jsonutil.helper.CommonUtil;
 import com.better517na.forStudy.advanced.reflect.jsonutil.helper.ReflectUtil;
-import com.better517na.forStudy.advanced.reflect.jsonutil.model.ClassContainer;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeContainer;
 import com.better517na.forStudy.advanced.reflect.jsonutil.model.SingleJSon;
 
 /**
@@ -210,7 +210,7 @@ public class JsonUtilsNew3 {
      * @return obj.
      * @throws Exception .
      */
-    public static Object toObject(String json, Class clazz, Type... genericClazzs) {
+    public static <T> T toObject(String json, Class<T> clazz, Type... genericClazzs) {
         if (CommonUtil.isNullOrEmpty(json)) {
             return null;
         }
@@ -255,10 +255,11 @@ public class JsonUtilsNew3 {
                 break;
             case "java.lang.String":
                 tmpValue = CommonUtil.isNullOrEmpty(fieldName) ? json.substring(1, json.length() - 1) : CommonUtil.getFieldStr4Basic(json, fieldName, true);
+                tmpValue = tmpValue.contains("\\") ? tmpValue.replaceAll("\\\\", "") : tmpValue;
                 if (null == tmpValue) {
                     return null;
                 }
-                obj = tmpValue;
+                obj = "\"\"".equals(tmpValue) ? "" : tmpValue;
                 break;
             case "java.lang.Integer":
                 tmpValue = CommonUtil.isNullOrEmpty(fieldName) ? json : CommonUtil.getFieldStr4Basic(json, fieldName, false);
@@ -461,17 +462,22 @@ public class JsonUtilsNew3 {
         // 处理泛型字段
         for (Entry<Field, Type> en : fieldMap.entrySet()) {
             Object tmpObj = null;
-            String currentJson = sinMap.get(en.getKey()).getFieldValue(); // 当前json
             Field fd = en.getKey();
+            String currentJson = sinMap.get(fd.getName()).getFieldValue(); // 当前json
             fd.setAccessible(true);
             if (en.getValue() instanceof Class) { // 简单泛型
-                Class[] cls = null;
-                if (CommonUtil.isListType(fd.getType()) || CommonUtil.isMapType(fd.getType())) {
+                Class type = (Class) en.getValue();
+                Class[] cls = new Class[1];
+                if (CommonUtil.isListType(type) || CommonUtil.isMapType(type)) {
                     cls = ReflectUtil.getGeneriParamsFromField(fd);
+                } else { // if (en.getValue() instanceof Class) {
+                    cls[0] = (Class) en.getValue();
                 }
-                tmpObj = instanceObject(currentJson, fd, cls);
-            } else if (en.getValue() instanceof ClassContainer) { // 复杂泛型
-                
+                tmpObj = instanceObject(currentJson, fd, true, type, cls);
+            } else if (en.getValue() instanceof TypeContainer) { // 复杂泛型
+                /*此处实为实现泛型嵌套的支持，若嵌套再嵌套，则递归*/
+                TypeContainer cc = (TypeContainer) en.getValue();
+                tmpObj = toObject(currentJson, (Class)cc.getRawType(), cc.getActualTypeArguments());
             }
             fd.set(obj, tmpObj);
             fd.setAccessible(false);
@@ -484,24 +490,61 @@ public class JsonUtilsNew3 {
      * 普通的obj构建.
      */
     private static Object instanceObject(String json, Field field, Class...cls) throws Exception {
-        Object obj = null; 
+        Object obj = null;
+        
+        if (CommonUtil.isNullOrEmpty(json)) {
+            return null;
+        }
+        
         if (CommonUtil.isBasicType(field.getType())) {
-            json += "\"" + field.getName() + "\":";
+            String basicJson = "\"" + field.getName() + "\":";
             if (field.getType() == String.class || field.getType() == Date.class || field.getType() == Character.class || field.getType() == char.class) {
-                json += "\"" + json + "\"";
+                basicJson += "\"" + json + "\"";
             } else {
-                json += CommonUtil.getFieldStr4Basic(json, field.getName(), false);
+                basicJson += CommonUtil.getFieldStr4Basic(json, field.getName(), false);
             }
-            obj = instanceBasicObject(json, field.getName(), field.getType());
+            obj = instanceBasicObject(basicJson, field.getName(), field.getType());
         } else if (CommonUtil.isDefinedModel(field.getType())) {
             obj = instanceModelObject(json, field.getType());
         } else if (CommonUtil.isMapType(field.getType())) {
-            // Class[] cls = ReflectUtil.getGeneriParamsFromField(field);
             obj = instanceMapObject(json, cls[0], cls[1]);
         } else if (CommonUtil.isListType(field.getType())) {
-            // Class[] cls = ReflectUtil.getGeneriParamsFromField(field);
             obj = instanceListObject(json, cls[0]);
         }
+        
+        return obj;
+    }
+    
+    /**
+     * 普通的obj构建.
+     */
+    private static Object instanceObject(String json, Field field, Boolean isGeneric, Class rawClazz, Class...cls) throws Exception {
+        Object obj = null;
+        
+        if (CommonUtil.isNullOrEmpty(json)) {
+            return null;
+        }
+        
+        if (CommonUtil.isBasicType(field.getType()) || (isGeneric && CommonUtil.isBasicType(rawClazz))) {
+            String basicJson = "\"" + field.getName() + "\":";
+            // json += "\"" + field.getName() + "\":";
+            if (field.getType() == String.class || (isGeneric && rawClazz == String.class) 
+                    || field.getType() == Date.class || (isGeneric && rawClazz == Date.class)
+                    || field.getType() == Character.class || (isGeneric && rawClazz == Character.class)
+                    || field.getType() == char.class || (isGeneric && rawClazz == char.class)) {
+                basicJson += "\"" + json + "\"";
+            } else {
+                basicJson += CommonUtil.getFieldStr4Basic(json, field.getName(), false);
+            }
+            obj = instanceBasicObject(basicJson, field.getName(), field.getType());
+        } else if (CommonUtil.isDefinedModel(field.getType()) || (isGeneric && CommonUtil.isDefinedModel(rawClazz))) {
+            obj = instanceModelObject(json, field.getType());
+        } else if (CommonUtil.isMapType(field.getType()) || (isGeneric && CommonUtil.isMapType(rawClazz))) {
+            obj = instanceMapObject(json, cls[0], cls[1]);
+        } else if (CommonUtil.isListType(field.getType()) || (isGeneric && CommonUtil.isListType(rawClazz))) {
+            obj = instanceListObject(json, cls[0]);
+        }
+        
         return obj;
     }
     
@@ -521,10 +564,16 @@ public class JsonUtilsNew3 {
         for (SingleJSon single : singles) {
             String key = single.getValue().substring(1, single.getColonIndex() - 1);
             Object valObj = null;
-            if (valueClazz instanceof ClassContainer) {
-                ClassContainer cc = (ClassContainer) valueClazz;
-                Class rawClazz = cc.getRawClazz();
-                Class[] generics = cc.getActualTypeArguments();
+            if (valueClazz instanceof TypeContainer) {
+                TypeContainer cc = (TypeContainer) valueClazz;
+                Class rawClazz = null;
+                Class[] generics = null;
+                if (cc.getRawType() instanceof Class) {
+                    rawClazz = (Class) cc.getRawClazz();
+                }
+                if (cc.getActualTypeArguments() instanceof Class[]) {
+                    generics = (Class[]) cc.getActualTypeArguments();
+                }
                 valObj = toObject(single.getValue().substring(single.getColonIndex() + 1, single.getValue().length()), rawClazz, generics);
             } else if (valueClazz instanceof Class) {
                 Class clazz = (Class) valueClazz;
@@ -740,7 +789,7 @@ public class JsonUtilsNew3 {
      * TODO 参数校验.
      */
     private static void paramNullCheck(Object... objs) throws Exception {
-        if (CommonUtil.isNullOrEmpty(objs)) {
+        if (CommonUtil.isNullOrEmptyByAnyOne(objs)) {
             throw new JsonUtilException("必要参数不能为空");
         }
     }

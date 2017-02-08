@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.better517na.forStudy.advanced.reflect.jsonutil.model.ClassContainer;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeContainer;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.JsonTest3.GenALocal;
 import com.better517na.forStudy.util.JsonUtils;
 
@@ -82,13 +82,13 @@ public class Test {
     @org.junit.Test
     public void ttttttttt2() {
         Type[] ttt = {
-                String.class, new ClassContainer(GenALocal.class, String.class, Integer.class)
+                String.class, new TypeContainer(GenALocal.class, String.class, Integer.class)
         };
         for (Type type : ttt) {
             String sss = type.toString();
             if (type instanceof Class) {
                 sss += ": Class";
-            } else if (type instanceof ClassContainer) {
+            } else if (type instanceof TypeContainer) {
                 sss += ": ClassContainer";
             }
             

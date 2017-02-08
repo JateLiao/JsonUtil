@@ -113,9 +113,42 @@ public class CommonUtil {
     }
     
     /**
-     * 判空
+     * 判空：全为空才是空
      */
     public static boolean isNullOrEmpty(Object... objs) {
+        boolean res = true;
+        for (Object obj : objs) {
+            if (!isNullOrEmpty(obj)) {
+                res = false;
+                break;
+            }
+        }
+
+        return res;
+    }
+    
+    /**
+     * 判空：全为空才是空
+     */
+    public static boolean isNullOrEmptyClassArr(Class... cls) {
+        boolean res = true;
+        if (null == cls || cls.length == 0) {
+            return true;
+        }
+        for (Class c : cls) {
+            if (!isNullOrEmpty(c)) {
+                res = false;
+                break;
+            }
+        }
+
+        return res;
+    }
+    
+    /**
+     * 判空：任意一个为空则为空
+     */
+    public static boolean isNullOrEmptyByAnyOne(Object... objs) {
         for (Object obj : objs) {
             if (isNullOrEmpty(obj)) {
                 return true;
