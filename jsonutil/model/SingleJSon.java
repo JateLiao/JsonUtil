@@ -11,17 +11,66 @@ package com.better517na.forStudy.advanced.reflect.jsonutil.model;
 /**
  * TODO 单个json对，以及一些信息
  * 
- * @author     tianzhong
+ * @author tianzhong
  */
 public class SingleJSon {
     /**
      * json.
      */
     private String value;
+
     /**
-     * 冒号的位置.
+     * 冒号的位置（从0开始计算）.
      */
     private Integer colonIndex;
+
+    /**
+     * 字段名.
+     */
+    private String fieldName;
+
+    /**
+     * 设置fieldName.
+     * 
+     * @return 返回fieldName
+     */
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    /**
+     * 获取fieldName.
+     * 
+     * @param fieldName
+     *            要设置的fieldName
+     */
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    /**
+     * 字段值.
+     */
+    private String fieldValue;
+
+    /**
+     * 设置fieldValue.
+     * 
+     * @return 返回fieldValue
+     */
+    public String getFieldValue() {
+        return fieldValue;
+    }
+
+    /**
+     * 获取fieldValue.
+     * 
+     * @param fieldValue
+     *            要设置的fieldValue
+     */
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
+    }
 
     /**
      * 设置value.
