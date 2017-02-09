@@ -339,6 +339,7 @@ public class JsonUtilsNew3 {
         paramNullCheck(clazz);
         Object localObj = clazz.newInstance(); 
 
+        Map<String, SingleJSon> sinMap = CommonUtil.getSingleJsonValueByMap(json);
         Field[] fds = clazz.getDeclaredFields();
         for (Field fd : fds) {
             Class fdClz = fd.getType();
@@ -372,7 +373,7 @@ public class JsonUtilsNew3 {
     }
     
     /**
-     * List以及泛型类型字段类型值构造.
+     * 泛型类型字段类型值构造.
      */
     private static Object instanceGenericObject(String json, Class rawClazz, Class[] genericClazz) throws Exception {
         // 进入这个方法，json的格式：["":"",{},[]]
@@ -420,7 +421,17 @@ public class JsonUtilsNew3 {
      */
     private static Object instanceGenericObject(String json, Class clazz, Type[] genericClazzs) throws Exception {
         Class clz = Class.forName(clazz.getName());
-        Object obj = clz.newInstance(); // 实例化目标对象
+        // 实例化目标对象
+        Object obj = null;
+        if (CommonUtil.isListType(clazz)) {
+            return instanceListObject(json, (Class) genericClazzs[0]);
+            // obj = new ArrayList<>();
+        } else if (CommonUtil.isMapType(clazz)) {
+            return instanceMapObject(json, (Class) genericClazzs[0], (Class) genericClazzs[1]);
+            // obj = new HashMap<>();
+        } else {
+            obj = clz.newInstance(); 
+        }
         Map<String, Type> typeMap = new HashMap<>();
         TypeVariable[] types = clazz.getTypeParameters();
         
@@ -534,11 +545,11 @@ public class JsonUtilsNew3 {
                     || field.getType() == char.class || (isGeneric && rawClazz == char.class)) {
                 basicJson += "\"" + json + "\"";
             } else {
-                basicJson += CommonUtil.getFieldStr4Basic(json, field.getName(), false);
+                basicJson += json; // CommonUtil.getFieldStr4Basic(json, field.getName(), false);
             }
-            obj = instanceBasicObject(basicJson, field.getName(), field.getType());
+            obj = instanceBasicObject(basicJson, field.getName(), isGeneric ? rawClazz : field.getType());
         } else if (CommonUtil.isDefinedModel(field.getType()) || (isGeneric && CommonUtil.isDefinedModel(rawClazz))) {
-            obj = instanceModelObject(json, field.getType());
+            obj = instanceModelObject(json, isGeneric ? rawClazz : field.getType());
         } else if (CommonUtil.isMapType(field.getType()) || (isGeneric && CommonUtil.isMapType(rawClazz))) {
             obj = instanceMapObject(json, cls[0], cls[1]);
         } else if (CommonUtil.isListType(field.getType()) || (isGeneric && CommonUtil.isListType(rawClazz))) {
@@ -679,8 +690,8 @@ public class JsonUtilsNew3 {
         List<Object> list = new ArrayList<>();
         List<String> singleJson = CommonUtil.getSingleJsonFromList(json);
         for (String single : singleJson) {
-            Object obj = toObject(single, List.class, clazz);
-            list.add(obj);
+            List<Object> tmpList = toObject(single, List.class, clazz);
+            list.add(tmpList.get(0));
         }
         
         return list;

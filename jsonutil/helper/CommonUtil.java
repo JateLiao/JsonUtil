@@ -286,6 +286,20 @@ public class CommonUtil {
         return result;
     }
     
+   /**
+    * TODO 获取每个字段对应的单个json信息，以Map形式返回
+    */
+    public static Map<String, SingleJSon> getSingleJsonValueByMap(String json) {
+        Map<String, SingleJSon> res = new HashMap<>();
+        
+        List<SingleJSon> list = getSingleJsonValue(json);
+        for (SingleJSon sin : list) {
+            res.put(sin.getFieldName(), sin);
+        }
+        
+        return res;
+    }
+    
     /**
      * TODO 获取json对.
      * 

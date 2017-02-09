@@ -23,13 +23,14 @@ import com.better517na.forStudy.util.JsonUtils;
  * TODO 添加类的一句话简单描述.
  * @author     tianzhong
  */
+@SuppressWarnings("unchecked")
 public class JsonTest4 {
     
     
     @Test
     public void toObjTypeContainnerTest1(){
         // K, T, V
-        GenA<String, Define, GenA<String, Integer, Define>> gen = new GenA<>();
+        GenA<String, Define, GenA<List<Define>, Map<String, Define>, Define>> gen = new GenA<>();
         Define d1 = new Define();
         d1.setDefineInt(500);
         d1.setDefineName("Define-d1-name");
@@ -53,14 +54,14 @@ public class JsonTest4 {
         gen.setMap(map );
         gen.setName("GenA-Name:Super All Star");
         gen.setTt(d1);
-        GenA<String, Integer, Define> genG = new GenA<>();
+        GenA<List<Define>, Map<String, Define>, Define> genG = new GenA<>();
         genG.setDef(d2);
         genG.setDefList(defList);
         genG.setDefMap(defMap);
-        genG.setKk("genG-kk-value:genG-KK");
+        genG.setKk(defList);
         genG.setMap(map);
         genG.setName("genG-Name:KAKAROTE");
-        genG.setTt(5555);
+        genG.setTt(defMap);
         genG.setVv(d1);
         gen.setVv(genG);
         
@@ -70,8 +71,7 @@ public class JsonTest4 {
         System.out.println(json);
         
         // String, Define, GenA<String, Integer, Define>
-        TypeContainer tc = new TypeContainer(GenA.class, String.class, Integer.class, Define.class);
-        @SuppressWarnings("unchecked")
+        TypeContainer tc = new TypeContainer(GenA.class, new TypeContainer(List.class, Define.class), new TypeContainer(Map.class, String.class, Define.class), Define.class);
         GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, String.class, Define.class, tc);
         
         System.out.println(JsonUtilsNew3.toJson(genNew));
