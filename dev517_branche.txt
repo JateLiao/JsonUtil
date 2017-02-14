@@ -1,4 +1,4 @@
 Vim Mode Input:
-    This is a newly created txt file to text the git command:git clone and git branch -d dev517.
-
+    This is a newly created txt file to test the git command:git clone and git branch -d dev517.      这是用来测试新建分支命令的文件
+	
 The End!
