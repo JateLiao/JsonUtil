@@ -41,6 +41,8 @@ XXX implements ParameterizedType：保存所有参数类型
 2.List和Map需要完成对泛型嵌套支持（待完成）；
 3.json字符串的格式验证（待完成）。
 
+2017.2.15:
+1.CodeReview.
 
 
 
