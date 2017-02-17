@@ -23,7 +23,7 @@ import com.better517na.forStudy.advanced.reflect.jsonutil.helper.CommonUtil;
 import com.better517na.forStudy.util.JsonUtils;
 
 /**
- * TODO 添加类的一句话简单描述.
+ * TODO 用来测试泛型嵌套的主要测试类.
  * <p>
  * TODO 详细描述
  * <p>
