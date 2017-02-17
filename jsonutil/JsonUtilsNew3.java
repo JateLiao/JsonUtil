@@ -37,7 +37,7 @@ import com.better517na.forStudy.advanced.reflect.jsonutil.model.SingleJSon;
 public class JsonUtilsNew3 {
 
     /**
-     * 日期格式化.
+     * 日期格式化：yyyy-MM-dd HH:mm:ss.
      */
     private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
  
