@@ -44,5 +44,6 @@ XXX implements ParameterizedType：保存所有参数类型
 2017.2.15:
 1.CodeReview.
 
-
+2017.2.17:
+1.对比上个版本，去掉无用代码；
 
