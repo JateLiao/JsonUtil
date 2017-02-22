@@ -76,7 +76,7 @@ public class ReflectUtil {
         List<Field> res = new ArrayList<>();
         res.addAll(Arrays.asList(clazz.getDeclaredFields()));
         Class superClazz = clazz.getSuperclass();
-        while(clazz.getSuperclass() != Object.class){
+        while(superClazz != Object.class){
             res.addAll(Arrays.asList(superClazz.getDeclaredFields()));
             superClazz = superClazz.getSuperclass();
         }
