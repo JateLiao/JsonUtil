@@ -14,6 +14,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 反射相关的一些工具集.
@@ -64,6 +67,32 @@ public class ReflectUtil {
         cs[0] -= 32; // 方法首字母大写
         return "set" + String.valueOf(cs);
 
+    }
+    
+    /**
+     * TODO 获取所有字段（包括所有父类）.
+     */
+    public static List<Field> getAllFields(Class clazz) {
+        List<Field> res = new ArrayList<>();
+        res.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        Class superClazz = clazz.getSuperclass();
+        while(clazz.getSuperclass() != Object.class){
+            res.addAll(Arrays.asList(superClazz.getDeclaredFields()));
+            superClazz = superClazz.getSuperclass();
+        }
+        return res;
+    }
+    
+    /**
+     * TODO 获取所有字段（包括所有父类）.
+     */
+    public static Field[] getAllFieldsArr(Class clazz) {
+        List<Field> fds = getAllFields(clazz);
+        Field[] res= new Field[fds.size()];
+        for (int i = 0; i < fds.size(); i++) {
+            res[i] = fds.get(i);
+        }
+        return res;
     }
     
     /**
