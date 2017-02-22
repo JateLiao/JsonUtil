@@ -58,5 +58,9 @@ public class JsonTest5 {
         System.out.println(json);
         json = JsonUtils.toJson(chengduBo);
         System.out.println(json);
+        
+        ChengduBo cd = JsonUtilsNew3.toObject(json, ChengduBo.class);
+        
+        System.out.println(cd.getMainStreets().get(0));
     }
 }

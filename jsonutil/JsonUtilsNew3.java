@@ -318,6 +318,20 @@ public class JsonUtilsNew3 {
                 }
                 obj = Byte.valueOf(tmpValue);
                 break;
+            case "java.lang.Double":
+                tmpValue = CommonUtil.isNullOrEmpty(fieldName) ? json : CommonUtil.getFieldStr4Basic(json, fieldName, false);
+                if (null == tmpValue) {
+                    return null;
+                }
+                obj = Double.valueOf(tmpValue);
+                break;
+            case "double":
+                tmpValue = CommonUtil.isNullOrEmpty(fieldName) ? json : CommonUtil.getFieldStr4Basic(json, fieldName, false);
+                if (null == tmpValue) {
+                    return 0.0;
+                }
+                obj = Double.valueOf(tmpValue);
+                break;
             default:
                 break;
         }
@@ -341,7 +355,7 @@ public class JsonUtilsNew3 {
         Object localObj = clazz.newInstance(); 
 
         Map<String, SingleJSon> sinMap = CommonUtil.getSingleJsonValueByMap(json);
-        Field[] fds = clazz.getDeclaredFields();
+        Field[] fds = ReflectUtil.getAllFieldsArr(clazz); // clazz.getDeclaredFields();
         for (Field fd : fds) {
             Class fdClz = fd.getType();
             Object obj = null;
@@ -351,7 +365,7 @@ public class JsonUtilsNew3 {
             } else if (CommonUtil.isDefinedModel(fdClz)) {
                 String modelJson = sinMap.get(fd.getName()).getFieldValue(); // CommonUtil.getFieldStr4Others(json, fd.getName(), "{");
                 obj = instanceModelObject(modelJson, fdClz);
-            } else if (ReflectUtil.isGeneicType(fd.getGenericType())) { // 字段是泛型类型
+            } else if (ReflectUtil.isGeneicType(fd.getGenericType())) { // 字段是泛型类型 
                 Class[] cls = ReflectUtil.getGeneriParamsFromField(fd);
                 if (CommonUtil.isListType(fdClz)) {
                     String listJson = sinMap.get(fd.getName()).getFieldValue(); // CommonUtil.getFieldStr4Others(json, fd.getName(), "[");
@@ -377,12 +391,12 @@ public class JsonUtilsNew3 {
      * 泛型类型字段类型值构造.
      */
     private static Object instanceGenericObject(String json, Class rawClazz, Class[] genericClazz) throws Exception {
-        // 进入这个方法，json的格式：["":"",{},[]]
+        // 进入这个方法，json的格式：["":"",{},[]] 
         if (CommonUtil.isNullOrEmpty(json)) {
             return null;
         }
         paramNullCheck(rawClazz, genericClazz);
-        if (rawClazz.getTypeParameters().length < genericClazz.length) { // 取前面的类型，后面多余的忽略
+        if (rawClazz.getTypeParameters().length > genericClazz.length) { // 取前面的类型，后面多余的忽略
             throw new JsonUtilException("泛型参数个数与真实所需个数不一致!");
         }
         Object obj = null;
@@ -784,8 +798,8 @@ public class JsonUtilsNew3 {
      * TODO 构建List<String>.
      */
     private static void buildBasicStringList(List<Object> objList, String value) throws Exception {
-        paramNullCheck(objList, value);
-        // "ac"s"ca","sdas,sads","joisc"
+        paramNullCheck(value);
+        // "ac"s"ca","sdas,sads","joisc" 
         // 以引号作为阶段标准，而非逗号
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < value.length(); i++) {
