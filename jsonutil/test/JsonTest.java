@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew2;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.AddressCodeBo;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.BoostBo;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.CityBo;
 import com.better517na.forStudy.util.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,7 +31,7 @@ import com.google.gson.reflect.TypeToken;
  * 
  * <pre>
  * </pre>
- * 
+ *  
  * @author tianzhong
  */
 @SuppressWarnings("unchecked")

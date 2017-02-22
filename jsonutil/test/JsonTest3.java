@@ -20,6 +20,8 @@ import org.junit.Test;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
 import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeContainer;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.Define;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.GenA;
 import com.better517na.forStudy.util.JsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

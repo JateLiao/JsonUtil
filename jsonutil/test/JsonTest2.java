@@ -14,6 +14,9 @@ import java.util.List;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew2;
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.AddressCodeBo;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.BoostBo;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.CityBo;
 
 /**
  * TODO 添加类的一句话简单描述.
