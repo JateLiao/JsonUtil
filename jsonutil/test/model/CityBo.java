@@ -6,7 +6,7 @@
  * 修改时间：2016年7月15日
  * 修改内容：新增
  */
-package com.better517na.forStudy.advanced.reflect.jsonutil.test;
+package com.better517na.forStudy.advanced.reflect.jsonutil.test.model;
 
 /**
  * TODO 添加类的一句话简单描述.

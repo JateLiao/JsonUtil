@@ -1,4 +1,4 @@
-package com.better517na.forStudy.advanced.reflect.jsonutil.test;
+package com.better517na.forStudy.advanced.reflect.jsonutil.test.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
