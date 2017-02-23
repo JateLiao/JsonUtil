@@ -8,6 +8,8 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.model;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
@@ -28,12 +30,40 @@ public class TypeToken<T> {
      * 添加字段注释.
      */
     private T targetType;
+    
+    @SuppressWarnings("hiding")
+    class TypeLoader<T> {
+        public TypeToken<T> typeLoader; 
+
+        /**
+         * TODO 添加方法注释.
+         * 
+         * @return .
+         * @throws Exception .
+         */
+        public Field getTypeLoader() throws Exception {
+            return this.getClass().getDeclaredFields()[0];
+        }
+    }
 
     /**
      * 构造函数.
      */
     public TypeToken() {
-
+        System.out.println();
+        
+        try {
+            Type[] params = ((ParameterizedType)new TypeLoader<T>().getTypeLoader().getGenericType()).getActualTypeArguments();
+            //Type[] sss = ((ParameterizedType)new TypeLoader<T>(){ }.getClass().getGenericSuperclass()).getActualTypeArguments();
+            
+            for (Type type : params) {
+                if (type instanceof Class) {
+                    System.out.println(((Class)type).getName());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -63,6 +93,9 @@ public class TypeToken<T> {
     }
 
     public Type[] getType() {
+        if (targetType == null) {
+            return null;
+        }
         Type[] res = new Type[10];
         
         return res;
