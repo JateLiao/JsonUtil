@@ -21,6 +21,7 @@ import org.junit.Test;
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
 import com.better517na.forStudy.advanced.reflect.jsonutil.helper.CommonUtil;
 import com.better517na.forStudy.advanced.reflect.jsonutil.model.SingleJSon;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeToken;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.Define;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.GenA;
 import com.better517na.forStudy.util.JsonUtils;
@@ -95,7 +96,7 @@ public class Test2 {
     
     @Test
     public void testsss(){
-
+        new TypeToken<List<Map<String, String>>>().getType();
         GenA<String, Define, Integer> gen = new GenA<>();
         gen.setKk("");
         gen.setVv(120);
