@@ -49,6 +49,7 @@ public class TypeToken<T> {
     /**
      * 构造函数.
      */
+    @SuppressWarnings("rawtypes")
     public TypeToken() {
         System.out.println();
         
