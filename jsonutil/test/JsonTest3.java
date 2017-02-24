@@ -81,8 +81,8 @@ public class JsonTest3 {
             ((ParameterizedType)cn).getActualTypeArguments();
             
             new Gson().fromJson("", null);
-            JsonUtilsNew3.toObject("", String.class, null);
-            new TypeContainer(null, null);
+//            JsonUtilsNew3.toObject("", String.class, null);
+//            new TypeContainer(null, null);
         }
     }
 
@@ -143,6 +143,7 @@ public class JsonTest3 {
 //        System.out.println(gen.def.defineName);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void testToObjGenric2() throws Exception{
         GenALocal<String, DefineLocal, Map<String, Integer>> gen = new GenALocal<>();
