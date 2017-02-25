@@ -47,3 +47,6 @@ XXX implements ParameterizedType：保存所有参数类型
 2017.2.17:
 1.对比上个版本，去掉无用代码；
 
+2017.2.24：
+1.增加对父类字段的获取；
+2.增加TypeToken类，魔模仿实现Gson的类似功能（待完成）。
