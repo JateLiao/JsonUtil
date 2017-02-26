@@ -53,3 +53,6 @@ XXX implements ParameterizedType：保存所有参数类型
 
 2017.2.25:
 1.模仿tokentype暂告失败，shit
+
+2017.2.26:
+1.再次模仿失败，开始怀疑人生了...
