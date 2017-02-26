@@ -1,1 +1,3 @@
 this file is to test the git remove function.
+
+commond: git rm xxx;git commit;git push
