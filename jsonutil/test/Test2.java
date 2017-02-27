@@ -11,6 +11,7 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.test;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +97,7 @@ public class Test2 {
     
     @Test
     public void testsss(){
-        new TypeToken<List<Map<String, String>>>().getType();
+        new TypeToken<List<Map<String, String>>>().getGenericType();
         GenA<String, Define, Integer> gen = new GenA<>();
         gen.setKk("");
         gen.setVv(120);
