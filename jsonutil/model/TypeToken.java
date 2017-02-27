@@ -9,8 +9,11 @@
 package com.better517na.forStudy.advanced.reflect.jsonutil.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO 添加类的一句话简单描述.
@@ -29,42 +32,51 @@ public class TypeToken<T> {
     /**
      * 添加字段注释.
      */
-    private T targetType;
-    
-    @SuppressWarnings("hiding")
-    class TypeLoader<T> {
-        public TypeToken<T> typeLoader; 
+    public T targetType;
 
-        /**
-         * TODO 添加方法注释.
-         * 
-         * @return .
-         * @throws Exception .
-         */
-        public Field getTypeLoader() throws Exception {
-            return this.getClass().getDeclaredFields()[0];
-        }
+    /**
+     * 
+     * TODO 辅助获取T.class.
+     */
+    public T tmpMethod() {
+        return null;
     }
-
+    
     /**
      * 构造函数.
      */
-    @SuppressWarnings("rawtypes")
-    public TypeToken() {
+    public Type getGenericType() {
         System.out.println();
         
+        // Type[] sss = ((ParameterizedType)new TypeToken<List<Map<String, String>>>().getClass().getGenericSuperclass()).getActualTypeArguments();
+        // System.out.println(sss.length);
+        
         try {
-            Type[] params = ((ParameterizedType)new TypeLoader<T>().getTypeLoader().getGenericType()).getActualTypeArguments();
-            //Type[] sss = ((ParameterizedType)new TypeLoader<T>(){ }.getClass().getGenericSuperclass()).getActualTypeArguments();
+            // Type[] params = ((ParameterizedType)new TypeLoader<T>().getTypeLoader().getGenericType()).getActualTypeArguments();
+            // //Type[] sss = ((ParameterizedType)new TypeLoader<T>(){ }.getClass().getGenericSuperclass()).getActualTypeArguments();
+            //
+            // for (Type type : params) {
+            // if (type instanceof Class) {
+            // System.out.println(((Class)type).getName());
+            // }
+            // }
             
-            for (Type type : params) {
-                if (type instanceof Class) {
-                    System.out.println(((Class)type).getName());
-                }
-            }
+            // Method tmpMethod=TypeToken.class.getMethod("tmpMethod");
+            // Type[] types=tmpMethod.getGenericParameterTypes();
+            // System.out.println(types[0].toString());
+            
+            Field fd = this.getClass().getDeclaredField("targetType");
+            fd.setAccessible(true);
+            System.out.println(fd.toGenericString());
+            //fd.setAccessible(false);
+            
+            Field fd2 = this.getClass().getField("targetType");
+            System.out.println(fd2.toGenericString());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        return null;
     }
 
     /**
@@ -72,6 +84,12 @@ public class TypeToken<T> {
      */
     public TypeToken(T t) {
         this.targetType = t;
+    }
+
+    /**
+     * 构造函数.
+     */
+    public TypeToken() {
     }
 
     /**
@@ -91,14 +109,5 @@ public class TypeToken<T> {
      */
     public void setTargetType(T targetType) {
         this.targetType = targetType;
-    }
-
-    public Type[] getType() {
-        if (targetType == null) {
-            return null;
-        }
-        Type[] res = new Type[10];
-        
-        return res;
     }
 }
