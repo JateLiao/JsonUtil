@@ -59,3 +59,6 @@ XXX implements ParameterizedType：保存所有参数类型
 
 2017.2.27:
 1.失败
+
+2017.2.28:
+1.2月最后一天，依然失败，damn it
