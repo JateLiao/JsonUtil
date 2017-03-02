@@ -16,6 +16,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeToken;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.BoostBo;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.ChengduBo;
 import com.better517na.forStudy.util.JsonUtils;
@@ -33,6 +34,13 @@ import com.better517na.forStudy.util.JsonUtils;
  * @author tianzhong
  */
 public class JsonTest5 {
+    
+    @Test
+    public void xxxx() throws Exception{
+        // List<Map<String, String>> a = new ArrayList<>();
+        new TypeToken<List<Map<String, String>>>().getTypeContainers();
+        // new TypeToken<List<Map<String, String>>>().getClass().getTypeParameters();
+    }
 
     @Test
     public void tttt() {
