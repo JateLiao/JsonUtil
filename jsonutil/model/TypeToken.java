@@ -8,12 +8,7 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.model;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 
 /**
  * TODO 添加类的一句话简单描述.
@@ -33,25 +28,30 @@ public class TypeToken<T> {
      * 添加字段注释.
      */
     public T targetType;
-
+    
     /**
-     * 
-     * TODO 辅助获取T.class.
+     * 添加字段注释.
      */
-    public T tmpMethod() {
-        return null;
-    }
+    public Class<? extends Object> clazz;
     
     /**
      * 构造函数.
+     * @throws SecurityException 
+     * @throws NoSuchFieldException 
      */
-    public Type getGenericType() {
+    public Type[] getTypeContainers()  {
         System.out.println();
         
-        // Type[] sss = ((ParameterizedType)new TypeToken<List<Map<String, String>>>().getClass().getGenericSuperclass()).getActualTypeArguments();
-        // System.out.println(sss.length);
-        
         try {
+            // ((ParameterizedType)this.clazz.getGenericSuperclass()).getActualTypeArguments()
+            System.out.println(this.clazz.getName());
+            this.targetType.getClass().getName();
+            // Type[] sss = ((ParameterizedType)new TypeToken<List<Map<String, String>>>().getClass().getGenericSuperclass()).getActualTypeArguments();
+            // System.out.println(sss.length);
+            ////// 3333333333333
+            
+            
+            ////// 1111111111111
             // Type[] params = ((ParameterizedType)new TypeLoader<T>().getTypeLoader().getGenericType()).getActualTypeArguments();
             // //Type[] sss = ((ParameterizedType)new TypeLoader<T>(){ }.getClass().getGenericSuperclass()).getActualTypeArguments();
             //
@@ -65,13 +65,17 @@ public class TypeToken<T> {
             // Type[] types=tmpMethod.getGenericParameterTypes();
             // System.out.println(types[0].toString());
             
-            Field fd = this.getClass().getDeclaredField("targetType");
-            fd.setAccessible(true);
-            System.out.println(fd.toGenericString());
-            //fd.setAccessible(false);
-            
-            Field fd2 = this.getClass().getField("targetType");
-            System.out.println(fd2.toGenericString());
+            //////// 2222222222222222
+            // Field fd = this.getClass().getDeclaredField("targetType");
+            // fd.setAccessible(true);
+            // System.out.println(fd.toGenericString());
+            // //fd.setAccessible(false);
+            //
+            // Field fd2 = this.getClass().getField("targetType");
+            // System.out.println(fd2.toGenericString());
+            //
+            // Type[] ts = ((ParameterizedType)fd2.getGenericType()).getActualTypeArguments();
+            // System.out.println(ts.length);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,30 +88,21 @@ public class TypeToken<T> {
      */
     public TypeToken(T t) {
         this.targetType = t;
-    }
+    } 
 
     /**
      * 构造函数.
      */
     public TypeToken() {
+        // this.targetType = Class<T>.newInstance();
     }
 
     /**
-     * 设置targetType.
+     * 构造函数.
      * 
-     * @return 返回targetType
+     * @param class1
      */
-    public T getTargetType() {
-        return targetType;
-    }
-
-    /**
-     * 获取targetType.
-     * 
-     * @param targetType
-     *            要设置的targetType
-     */
-    public void setTargetType(T targetType) {
-        this.targetType = targetType;
+    public TypeToken(Class<? extends Object> cls) {
+        this.clazz = cls;
     }
 }
