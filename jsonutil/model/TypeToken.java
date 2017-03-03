@@ -49,9 +49,20 @@ public class TypeToken<T> {
         
         ParameterizedType parameterizedType = (ParameterizedType) superClass;
         
-        return null;
+        return canonicalize(parameterizedType);
     }
     
+    /**
+     * TODO 添加方法注释.
+     * 
+     * @param parameterizedType
+     * @return
+     */
+    private Type canonicalize(ParameterizedType parameterizedType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * 构造函数.
      * @throws SecurityException 
