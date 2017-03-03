@@ -8,6 +8,7 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.test;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +39,12 @@ public class JsonTest5 {
     @Test
     public void xxxx() throws Exception{
         // List<Map<String, String>> a = new ArrayList<>();
-        new TypeToken<List<Map<String, String>>>().getTypeContainers();
+        // new TypeToken<List<Map<String, String>>>().getTmpType();
         // new TypeToken<List<Map<String, String>>>().getClass().getTypeParameters();
+        
+        Type type = new com.google.common.reflect.TypeToken<List<Map<String, String>>>() { }.getType();
+        
+        System.out.println(type.getClass());
     }
 
     @Test
