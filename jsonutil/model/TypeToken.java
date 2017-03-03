@@ -8,6 +8,7 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.model;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
@@ -35,11 +36,28 @@ public class TypeToken<T> {
     public Class<? extends Object> clazz;
     
     /**
+     * TODO 添加方法注释.
+     * 
+     * @param clazz
+     * @return
+     */
+    public Type getType(){
+        Type superClass = this.getClass().getGenericSuperclass();
+        if (superClass instanceof Class) {
+            throw new RuntimeException("没有找到类型参数.");
+        }
+        
+        ParameterizedType parameterizedType = (ParameterizedType) superClass;
+        
+        return null;
+    }
+    
+    /**
      * 构造函数.
      * @throws SecurityException 
      * @throws NoSuchFieldException 
      */
-    public Type[] getTypeContainers()  {
+    public Type[] getTmpType()  {
         System.out.println();
         
         try {
