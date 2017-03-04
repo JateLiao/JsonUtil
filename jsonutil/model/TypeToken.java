@@ -50,7 +50,6 @@ public class TypeToken<T> {
         }
         
         ParameterizedType parameterizedType = (ParameterizedType) superClass;
-        
         return canonicalize(parameterizedType);
     }
     
@@ -64,6 +63,9 @@ public class TypeToken<T> {
         if (type instanceof Class) {
             Class<?> c = (Class<?>) type;
             return c.isArray() ? new GenericArrayTypeImpl(canonicalize(c.getComponentType())).getGenericComponentType() : c;
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            
         }
         return null;
     }
