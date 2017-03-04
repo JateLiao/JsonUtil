@@ -8,6 +8,8 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.model;
 
+import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -58,9 +60,34 @@ public class TypeToken<T> {
      * @param parameterizedType
      * @return
      */
-    private Type canonicalize(ParameterizedType parameterizedType) {
-        // TODO Auto-generated method stub
+    private Type canonicalize(Type type) {
+        if (type instanceof Class) {
+            Class<?> c = (Class<?>) type;
+            return c.isArray() ? new GenericArrayTypeImpl(canonicalize(c.getComponentType())).getGenericComponentType() : c;
+        }
         return null;
+    }
+    
+    /**
+     * @author tianzhong
+     */
+    @SuppressWarnings("serial")
+    private static final class GenericArrayTypeImpl implements GenericArrayType,Serializable {
+        private final Type componentType;
+        
+        public GenericArrayTypeImpl(Type ct) {
+            this.componentType = ct;
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return componentType;
+        }
+
+        @Override
+        public int hashCode() {
+            return componentType.hashCode();
+        }
     }
 
     /**
@@ -68,7 +95,7 @@ public class TypeToken<T> {
      * @throws SecurityException 
      * @throws NoSuchFieldException 
      */
-    public Type[] getTmpType()  {
+    public Type[] getTypeContainers()  {
         System.out.println();
         
         try {
