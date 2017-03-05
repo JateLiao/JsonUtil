@@ -50,7 +50,7 @@ public class TypeToken<T> {
         }
         
         ParameterizedType parameterizedType = (ParameterizedType) superClass;
-        return canonicalize(parameterizedType);
+        return canonicalize(parameterizedType.getActualTypeArguments()[0]);
     }
     
     /**
