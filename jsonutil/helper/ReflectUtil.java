@@ -138,4 +138,11 @@ public class ReflectUtil {
     public static boolean isGenericTypeField(Field field) {
         return !(field.getType() == field.getGenericType());
     }
+    
+    /**
+     * TODO 判断是否不是基础类型.
+     */
+    public static boolean isNotPrimitive(Type type) {
+        return !(type instanceof Class<?>) || !((Class<?>) type).isPrimitive();
+    }
 }
