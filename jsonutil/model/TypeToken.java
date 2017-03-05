@@ -16,6 +16,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.exception.JsonUtilException;
@@ -77,14 +78,22 @@ public class TypeToken<T> {
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             return new ParameterizedTypeImpl(parameterizedType.getOwnerType(), parameterizedType.getRawType(), parameterizedType.getActualTypeArguments());
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType gat = (GenericArrayType) type;
+            return new GenericArrayTypeImpl(gat.getGenericComponentType());
+        } else if (type instanceof WildcardType) {
+            WildcardType w = (WildcardType) type;
+            return new WildcardTypeImpl(w.getUpperBounds(), w.getLowerBounds());
         }
-        return null;
+        
+        return type;
     }
     
     /**
      * @author tianzhong
      */
     private static final class ParameterizedTypeImpl implements ParameterizedType, Serializable {
+        private static final long serialVersionUID = 1L;
         private final Type ownerType;
         private final Type rawType;
         private final Type[] typeArguments;
@@ -161,6 +170,61 @@ public class TypeToken<T> {
         @Override
         public int hashCode() {
             return componentType.hashCode();
+        }
+    }
+    
+    /**
+     * The WildcardType interface supports multiple upper bounds and multiple
+     * lower bounds. We only support what the Java 6 language needs - at most one
+     * bound. If a lower bound is set, the upper bound must be Object.class.
+     */
+    private static final class WildcardTypeImpl implements WildcardType, Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Type upperBound;
+        private final Type lowerBound;
+
+        public WildcardTypeImpl(Type[] upperBounds, Type[] lowerBounds) throws JsonUtilException {
+            checkArgument(lowerBounds.length <= 1);
+            checkArgument(upperBounds.length == 1);
+
+            if (lowerBounds.length == 1) {
+                checkNotNull(lowerBounds[0]);
+                // checkNotPrimitive(lowerBounds[0]);
+                if (ReflectUtil.isNotPrimitive(lowerBounds[0])) {
+                    throw new JsonUtilException();
+                }
+                checkArgument(upperBounds[0] == Object.class);
+                this.lowerBound = canonicalize(lowerBounds[0]);
+                this.upperBound = Object.class;
+
+            } else {
+                checkNotNull(upperBounds[0]);
+                if (ReflectUtil.isNotPrimitive(upperBounds[0])) {
+                    throw new JsonUtilException();
+                }
+                // checkNotPrimitive(upperBounds[0]);
+                this.lowerBound = null;
+                this.upperBound = canonicalize(upperBounds[0]);
+            }
+        }
+
+        public Type[] getUpperBounds() {
+            return new Type[]{upperBound};
+        }
+
+        public Type[] getLowerBounds() {
+            return lowerBound != null ? new Type[]{lowerBound} : new Type[]{};
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof WildcardType && $Gson$Types.equals(this, (WildcardType) other);
+        }
+
+        @Override
+        public int hashCode() {
+            // this equals Arrays.hashCode(getLowerBounds()) ^ Arrays.hashCode(getUpperBounds());
+            return (lowerBound != null ? 31 + lowerBound.hashCode() : 1) ^ (31 + upperBound.hashCode());
         }
     }
 
