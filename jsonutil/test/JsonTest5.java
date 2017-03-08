@@ -8,7 +8,6 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.test;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;

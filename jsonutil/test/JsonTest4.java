@@ -8,6 +8,7 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.test;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +17,17 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
+import com.better517na.forStudy.advanced.reflect.jsonutil.exception.JsonUtilException;
 import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeContainer;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.reflect.TypeToken;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.Define;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.GenA;
 import com.better517na.forStudy.util.JsonUtils;
 
 /**
  * TODO 添加类的一句话简单描述.
- * @author     tianzhong
+ * 
+ * @author tianzhong
  */
 @SuppressWarnings("unchecked")
 public class JsonTest4 {
@@ -32,9 +36,9 @@ public class JsonTest4 {
         System.out.println(ss.split(",")[0]);
         System.out.println(ss.split(",")[1]);
     }
-    
+
     @Test
-    public void toObjTypeContainnerTest1(){
+    public void toObjTypeContainnerTest1() {
         // K, T, V
         GenA<String, Define, GenA<List<Define>, Map<String, Define>, Define>> gen = new GenA<>();
         Define d1 = new Define();
@@ -57,7 +61,7 @@ public class JsonTest4 {
         map.put("Kobe", "Los Angeles Lakers");
         map.put("Jordan", "Chicago Bulls");
         map.put("Yao", "Houston Rockets");
-        gen.setMap(map );
+        gen.setMap(map);
         gen.setName("GenA-Name:Super All Star");
         gen.setTt(d1);
         GenA<List<Define>, Map<String, Define>, Define> genG = new GenA<>();
@@ -70,24 +74,22 @@ public class JsonTest4 {
         genG.setTt(defMap);
         genG.setVv(d1);
         gen.setVv(genG);
-        
+
         String json = JsonUtilsNew3.toJson(gen);
         System.out.println(json);
         json = JsonUtils.toJson(gen);
         System.out.println(json);
-        
+
         // String, Define, GenA<String, Integer, Define>
         TypeContainer tc = new TypeContainer(GenA.class, new TypeContainer(List.class, Define.class), new TypeContainer(Map.class, String.class, Define.class), Define.class);
         GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, String.class, Define.class, tc);
-        
+
         System.out.println(JsonUtilsNew3.toJson(genNew));
         System.out.println(genNew.getName());
     }
 
-    
-    
     @Test
-    public void toObjTypeContainnerTest2(){
+    public void toObjTypeContainnerTest2() throws JsonUtilException {
         // K, T, V
         GenA<String, Define, GenA<List<Define>, Map<String, Define>, Define>> gen = new GenA<>();
         Define d1 = new Define();
@@ -110,7 +112,7 @@ public class JsonTest4 {
         map.put("Kobe", "Los Angeles Lakers");
         map.put("Jordan", "Chicago Bulls");
         map.put("Yao", "Houston Rockets");
-        gen.setMap(map );
+        gen.setMap(map);
         gen.setName("GenA-Name:Super All Star");
         gen.setTt(d1);
         GenA<List<Define>, Map<String, Define>, Define> genG = new GenA<>();
@@ -123,16 +125,18 @@ public class JsonTest4 {
         genG.setTt(defMap);
         genG.setVv(d1);
         gen.setVv(genG);
-        
+
         String json = JsonUtilsNew3.toJson(gen);
         System.out.println(json);
         json = JsonUtils.toJson(gen);
         System.out.println(json);
-        
+
         // String, Define, GenA<String, Integer, Define>
-        TypeContainer tc = new TypeContainer(GenA.class, new TypeContainer(List.class, Define.class), new TypeContainer(Map.class, String.class, Define.class), Define.class);
-        GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, String.class, Define.class, tc);
-        
+        // TypeContainer tc = new TypeContainer(GenA.class, new TypeContainer(List.class, Define.class), new TypeContainer(Map.class, String.class, Define.class), Define.class);
+        // GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, String.class, Define.class, tc);
+        Type[] tcc = new TypeToken<GenA<String, Define, GenA<List<Define>, Map<String, Define>, Define>>>(){ }.getTypeContainers();
+        GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, tcc);
+
         System.out.println(JsonUtilsNew3.toJson(genNew));
         System.out.println(genNew.getName());
     }
