@@ -92,11 +92,11 @@ public class TypeToken<T> {
             return null;
         }
         ParameterizedType pt = (ParameterizedType) type;
-        Type[] ts = new Type[pt.getActualTypeArguments().length];
-        // if (pt.getRawType() instanceof Class) {
-        // ts[0] = (Class<?>)pt.getRawType();
-        // }
-        int index = 0;
+        Type[] ts = new Type[pt.getActualTypeArguments().length + 1];
+        if (pt.getRawType() instanceof Class) {
+            ts[0] = (Class<?>) pt.getRawType();
+        }
+        int index = 1;
         for (Type at : pt.getActualTypeArguments()) {
             if (at instanceof Class) {
                 ts[index++] = (Class<?>)at;

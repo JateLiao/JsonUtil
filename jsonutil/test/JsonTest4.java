@@ -135,7 +135,7 @@ public class JsonTest4 {
         // TypeContainer tc = new TypeContainer(GenA.class, new TypeContainer(List.class, Define.class), new TypeContainer(Map.class, String.class, Define.class), Define.class);
         // GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, String.class, Define.class, tc);
         Type[] tcc = new TypeToken<GenA<String, Define, GenA<List<Define>, Map<String, Define>, Define>>>(){ }.getTypeContainers();
-        GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, GenA.class, tcc);
+        GenA<String, Define, GenA<String, Integer, Define>> genNew = JsonUtilsNew3.toObject(json, tcc);
 
         System.out.println(JsonUtilsNew3.toJson(genNew));
         System.out.println(genNew.getName());

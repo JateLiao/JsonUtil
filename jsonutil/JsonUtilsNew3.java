@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -224,6 +225,21 @@ public class JsonUtilsNew3 {
             e.printStackTrace();
         }
         return clazz.cast(t);
+    }
+    
+    /**
+     * TODO 支持TypeToken.
+     * 
+     * 比如：ClassA<K, T, V> ==> ClassA<ClassB, List<ClassB>, Map<String, ClassB>>
+     * 
+     * @param json json.
+     * @param clazz 外层类型.
+     * @param genericClazz 泛型参数类型.
+     * @return obj.
+     * @throws Exception .
+     */
+    public static <T> T toObject(String json, Type... types) {
+        return toObject(json, (Class<T>) types[0], Arrays.copyOfRange(types, 1, types.length));
     }
     
     /***************************************************************************************************************************************************/
@@ -463,7 +479,7 @@ public class JsonUtilsNew3 {
         for (SingleJSon sin : singles) {
             sinMap.put(sin.getFieldName(), sin);
         }
-        Field[] fds = clazz.getDeclaredFields();
+        Field[] fds = ReflectUtil.getAllFieldsArr(clazz); // clazz.getDeclaredFields();
         for (Field fd : fds) {
             fd.setAccessible(true);
             
@@ -639,7 +655,7 @@ public class JsonUtilsNew3 {
         }
         Map<Field, Class> fieldMap = new HashMap<>(); // 存下字段对应的类型
         
-        Field[] fds = rawClazz.getDeclaredFields();
+        Field[] fds = ReflectUtil.getAllFieldsArr(rawClazz); // rawClazz.getDeclaredFields();
         List<SingleJSon> singles = CommonUtil.getSingleJsonValue(json);
         Map<String, SingleJSon> sinMap = new HashMap<>();
         for (SingleJSon sin : singles) {

@@ -431,4 +431,13 @@ public class CommonUtil {
         
         return list;
     }
+    
+
+
+    /**
+     * TODO 返回hashcode或者0.
+     */
+    public static int hashCodeOrZero(Object o) {
+      return o != null ? o.hashCode() : 0;
+    }
 }
