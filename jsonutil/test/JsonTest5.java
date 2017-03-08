@@ -8,6 +8,7 @@
  */
 package com.better517na.forStudy.advanced.reflect.jsonutil.test;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +18,12 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew3;
-import com.better517na.forStudy.advanced.reflect.jsonutil.model.TypeToken;
+import com.better517na.forStudy.advanced.reflect.jsonutil.exception.JsonUtilException;
+import com.better517na.forStudy.advanced.reflect.jsonutil.model.reflect.TypeToken;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.BoostBo;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.ChengduBo;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.Define;
+import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.GenA;
 import com.better517na.forStudy.util.JsonUtils;
 
 /**
@@ -37,14 +41,20 @@ import com.better517na.forStudy.util.JsonUtils;
 public class JsonTest5 {
     
     @Test
-    public void xxxx() throws Exception{
+    public void xxxx()  {
         // List<Map<String, String>> a = new ArrayList<>();
         // new TypeToken<List<Map<String, String>>>().getTmpType();
         // new TypeToken<List<Map<String, String>>>().getClass().getTypeParameters();
+        Type[] type = null;
+        try {
+            // type = new TypeToken<List<Map<String, Define>>>(){}.getType();
+            type = new TypeToken<GenA<List<Define>, Map<String, Define>, Define>>(){}.getTypeContainers();
+        } catch (JsonUtilException e) {
+            e.printStackTrace();
+        }
+        // Type type = new com.google.common.reflect.TypeToken<List<Map<String, String>>>() { }.getType();
         
-        Type type = new com.google.common.reflect.TypeToken<List<Map<String, String>>>() { }.getType();
-        
-        System.out.println(type.getClass());
+        System.out.println(type);
     }
 
     @Test

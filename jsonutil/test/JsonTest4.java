@@ -27,7 +27,11 @@ import com.better517na.forStudy.util.JsonUtils;
  */
 @SuppressWarnings("unchecked")
 public class JsonTest4 {
-    
+    public static void main(String[] args) {
+        String ss = "15828538300预订的酒店订单金额￥266.0已累计超过成本中心(wansan)2017年的预算金额,预算金额为￥2.0";
+        System.out.println(ss.split(",")[0]);
+        System.out.println(ss.split(",")[1]);
+    }
     
     @Test
     public void toObjTypeContainnerTest1(){
