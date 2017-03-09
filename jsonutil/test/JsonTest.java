@@ -10,6 +10,7 @@ package com.better517na.forStudy.advanced.reflect.jsonutil.test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.better517na.forStudy.advanced.reflect.jsonutil.JsonUtilsNew2;
+import com.better517na.forStudy.advanced.reflect.jsonutil.exception.JsonUtilException;
 import com.better517na.forStudy.advanced.reflect.jsonutil.helper.ReflectUtil;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.AddressCodeBo;
 import com.better517na.forStudy.advanced.reflect.jsonutil.test.model.BoostBo;
@@ -118,20 +120,13 @@ public class JsonTest {
     }
     
     @Test
-    public void tttttt(){
-        GenA<String, Define, GenA<String, Integer, Define>> gen = new GenA<>();
-        String k = "";
-        Define t = new Define();
-        GenA<String, Integer, Define> gg = new GenA<>();
-        gen.setKk(k);
-        gen.setTt(t);
-        gen.setVv(gg);
-        Field[] fds = gen.getClass().getDeclaredFields();
-        for (Field fd : fds) {
-            if (!ReflectUtil.isGenericTypeField(fd)) {
-                continue;
-            }
-            ParameterizedType pt = ((ParameterizedType)fd.getGenericType());
+    public void tttttt() throws JsonUtilException{
+        Type clazz = new com.better517na.forStudy.advanced.reflect.jsonutil.model.reflect.TypeToken<GenA<String, Define, GenA<List<Define>, Map<String, Define>, Define>>>(){}.getClass().getGenericSuperclass();
+        if (clazz instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) clazz;
+            ParameterizedType ppt = ((ParameterizedType)pt.getActualTypeArguments()[0]);
+            ppt.getRawType();
+            ppt.getActualTypeArguments();
         }
     }
 }
