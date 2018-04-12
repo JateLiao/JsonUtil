@@ -1,7 +1,9 @@
 Hello,everyone
 I'm a program rookie from China,I'm looking for some progress with you excellent guys.
 
-I'm learing about java reflect,this is a little json convert tool implemented by reflect.
+I'm learing about java reflect.
+
+Here is a little json convert tool implemented by reflect.
 
 I hope you guys text me some comments or advice, THANKS!!!!!
 
